@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Vyapaar Mitra – GST Compliance Agent (Prototype)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EDF1F0;--card:#FFFFFF;--ink:#12263A;--mut:#566574;--line:#D3DBDA;--acc:#1F7A6E;--accs:#D6EBE7;--warn:#9A4A06;--warns:#FCEBD3;--bad:#B42318;--bads:#FBE3E0;--ok:#146C43;--oks:#DAF1E4;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1A22;--card:#162632;--ink:#E7EEF2;--mut:#9DB0BD;--line:#2A3E4C;--acc:#5CC8B6;--accs:#173A38;--warn:#F2B15C;--warns:#3A2C14;--bad:#FF9C92;--bads:#40201D;--ok:#7FD8A6;--oks:#17352A;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E1A22;--card:#162632;--ink:#E7EEF2;--mut:#9DB0BD;--line:#2A3E4C;--acc:#5CC8B6;--accs:#173A38;--warn:#F2B15C;--warns:#3A2C14;--bad:#FF9C92;--bads:#40201D;--ok:#7FD8A6;--oks:#17352A;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:28px 18px 48px}
+h1,h2,h3{font-family:"Space Grotesk",system-ui,sans-serif;margin:0;line-height:1.15}
+h1{font-size:clamp(26px,5vw,38px)}h2{font-size:22px;margin-bottom:6px}h3{font-size:17px}
+.sub{color:var(--mut);margin:6px 0 0;max-width:62ch}
+.badge{display:inline-block;font-size:13px;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--warns);color:var(--warn);margin-bottom:10px}
+.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0 14px}
+.strip div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.strip b{display:block;font:700 22px "Space Grotesk",sans-serif}.strip span{font-size:13px;color:var(--mut)}
+#tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px}
+#tabs button{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 14px;border-radius:8px;font:500 15px inherit;font-family:inherit;cursor:pointer}
+#tabs button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+#panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.btn{background:var(--acc);color:#fff;border:0;border-radius:8px;padding:10px 16px;font:600 15px inherit;font-family:inherit;cursor:pointer}
+.btn.g{background:transparent;color:var(--acc);border:1px solid var(--acc)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+textarea,input,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px}
+textarea{min-height:84px;resize:vertical}
+label{display:block;font-size:13px;font-weight:600;color:var(--mut);margin:0 0 4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.chip{border:1px dashed var(--acc);background:transparent;color:var(--acc);border-radius:99px;padding:5px 12px;font:500 14px inherit;font-family:inherit;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:14px 0}
+.tbl{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}th{color:var(--mut);font-size:13px}
+td.n,th.n{text-align:right}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:13px;font-weight:600}
+.ok{background:var(--oks);color:var(--ok)}.warn{background:var(--warns);color:var(--warn)}.bad{background:var(--bads);color:var(--bad)}.info{background:var(--accs);color:var(--acc)}
+.box{border-radius:10px;padding:14px 16px;margin:12px 0}
+.row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
+.row.t{font-weight:700;border:0;font-size:18px}
+.note{font-size:13px;color:var(--mut);margin-top:16px}
+ul.c{list-style:none;padding:0;margin:10px 0}ul.c li{padding:7px 0;border-bottom:1px solid var(--line);display:flex;gap:10px}
+@media(max-width:560px){.strip b{font-size:17px}#panel{padding:16px}}
+</style></head><body><div class="wrap">
+<span class="badge">Prototype · filing is simulated</span>
+<h1>Vyapaar Mitra</h1>
+<p class="sub">An agent that reads a shop’s bills, matches suppliers, checks e-way bills and drafts the GST return. The owner approves; nothing is filed.</p>
+<div class="strip" id="strip"></div>
+<div id="tabs" role="tablist"></div>
+<div id="panel"></div>
+<p class="note">Demo logic only: intra-state sales (CGST + SGST), rates of 0/5/12/18/28%, mock supplier-filing data. Rules and due dates are illustrative; check the GST portal before real use. Tamil text is a draft translation.</p>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+const fmt=n=>"₹"+Math.round(n).toLocaleString("en-IN");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const GST=/^\d{2}[A-Z]{5}\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
+const FILED={"33AABCS1234F1Z5":true,"33AAACK4321M1Z2":false};
+let E=[
+{id:1,t:"P",party:"Sri Ganesh Traders",g:"33AABCS1234F1Z5",base:40000,rate:18},
+{id:2,t:"P",party:"Kovai Steels",g:"33AAACK4321M1Z2",base:100000,rate:18},
+{id:3,t:"S",party:"Selvam Constructions",g:"33AAECS9876P1Z1",base:150000,rate:18},
+{id:4,t:"S",party:"Walk-in customers",g:"",base:60000,rate:18}];
+let tab="capture",txt="",parsed=null,msg="",lang="en",done=null,reviewed=false,nid=5,eway=null,esel="";
+const TABS=[["capture","1 · Capture bills"],["ledger","2 · Ledger"],["match","3 · Match suppliers"],["dispatch","4 · E-way bill check"],["return","5 · Draft return"]];
+const tax=e=>e.base*e.rate/100;
+const filed=e=>e.t==="P"?(e.g?(FILED[e.g]??true):false):null;
+function calc(){let out=0,itc=0,hold=0;E.forEach(e=>{if(e.t==="S")out+=tax(e);else if(filed(e))itc+=tax(e);else hold+=tax(e)});
+return{out,itc,hold,pay:Math.max(0,out-itc),carry:Math.max(0,itc-out)}}
+function parse(s){const t=s.toLowerCase();
+const g=(s.match(/\b\d{2}[A-Za-z]{5}\d{4}[A-Za-z][1-9A-Za-z]Z[0-9A-Za-z]\b/)||[""])[0].toUpperCase();
+const a=s.match(/(?:₹|rs\.?|inr)\s*([\d,]+(?:\.\d+)?)/i);
+const r=s.match(/(\d{1,2})\s*%/);
+const p=s.match(/\b(?:from|to)\s+([A-Za-z][A-Za-z .&']*?)(?=\s*(?:gstin|gst\b|₹|rs\b|inr|\d|,|$))/i);
+return{t:/\b(sold|sale|sell|invoice to|bill to)\b/.test(t)?"S":"P",party:p?p[1].trim():"",g,base:a?parseFloat(a[1].replace(/,/g,"")):0,rate:r?+r[1]:""}}
+function go(k){tab=k;R()}
+function readBill(){txt=$("#txt").value;parsed=txt.trim()?parse(txt):null;msg=parsed?"":"Type or pick a bill first.";R()}
+function sample(i){txt=["Bought 200 pipes from Sri Ganesh Traders, GSTIN 33AABCS1234F1Z5, ₹40,000 plus 18% GST","Sold 50 bags cement to Selvam Constructions ₹25,000 GST 18%","Bought paint from Anbu Paints ₹12,000"][i];readBill()}
+function addEntry(){const e={id:nid,t:$("#f_t").value,party:$("#f_p").value.trim(),g:$("#f_g").value.trim().toUpperCase(),base:+$("#f_b").value,rate:+$("#f_r").value};
+const bad=[];if(!e.party)bad.push("party name");if(!(e.base>0))bad.push("amount before tax");if(![0,5,12,18,28].includes(e.rate)||$("#f_r").value==="")bad.push("GST rate (0, 5, 12, 18 or 28)");
+if(e.g&&!GST.test(e.g))bad.push("a valid 15-character GSTIN, or leave it blank");
+if(bad.length){parsed={...e,rate:$("#f_r").value};msg="Please fix: "+bad.join(", ")+".";R();return}
+nid++;E.push(e);parsed=null;txt="";msg="Added to ledger"+(e.t==="P"&&!e.g?". Note: no supplier GSTIN, so input credit cannot be claimed on this bill.":".");done=null;R()}
+function ewayCheck(){const v=+$("#e_v").value,fg=$("#e_f").value.trim().toUpperCase(),tg=$("#e_t").value.trim().toUpperCase(),veh=$("#e_h").value.replace(/[\s-]/g,"").toUpperCase(),goods=$("#e_g").value;
+eway={v,fg,tg,veh,goods,ok:[[v>50000?"E-way bill is required (consignment value above ₹50,000)":"Below ₹50,000, so an e-way bill is usually not needed. You may still generate one.",v>50000?"warn":"info"],[GST.test(fg)?"Sender GSTIN format is valid":"Sender GSTIN is missing or invalid",GST.test(fg)?"ok":"bad"],[GST.test(tg)?"Receiver GSTIN format is valid":"Receiver GSTIN missing or invalid. Needed for a registered buyer.",GST.test(tg)?"ok":"warn"],[/^[A-Z]{2}\d{2}[A-Z]{1,3}\d{4}$/.test(veh)?"Vehicle number format is valid":"Vehicle number looks wrong (example: TN38AB1234)",/^[A-Z]{2}\d{2}[A-Z]{1,3}\d{4}$/.test(veh)?"ok":"bad"],[goods.trim()?"Goods description present":"Goods description is missing",goods.trim()?"ok":"bad"]]};R()}
+function pick(){esel=$("#e_s").value;eway=null;R()}
+function approve(){done="SIM-"+Math.random().toString(36).slice(2,10).toUpperCase();R()}
+function dueInfo(){const n=new Date(),y=n.getFullYear(),m=n.getMonth(),per=new Date(y,m-1,1).toLocaleString("en-IN",{month:"long",year:"numeric"});
+return[["GSTR-1 (sales details)",new Date(y,m,11)],["GSTR-3B (summary and tax payment)",new Date(y,m,20)]].map(([l,d])=>{const days=Math.ceil((d-new Date(y,m,n.getDate()))/864e5);return`<li><span class="pill ${days<0?"bad":days<=3?"warn":"ok"}">${days<0?Math.abs(days)+" days overdue":days===0?"Due today":days+" days left"}</span><span>${l} for ${per}, due ${d.toLocaleDateString("en-IN",{day:"numeric",month:"short"})}</span></li>`}).join("")+`<li style="border:0"><span class="note" style="margin:0">Illustrative dates for monthly filers.</span></li>`}
+const V={
+capture(){const p=parsed;return`<h2>Capture a bill</h2><p class="sub">Type what the owner would say in a voice note, or paste a bill’s text. In the full product this comes from a WhatsApp photo or voice note.</p>
+<div class="chips"><button class="chip" onclick="sample(0)">Purchase with GSTIN</button><button class="chip" onclick="sample(1)">Sale</button><button class="chip" onclick="sample(2)">Missing details</button></div>
+<label for="txt">Bill or voice note</label><textarea id="txt" placeholder="Sold 50 bags cement to Selvam Constructions ₹25,000 GST 18%">${esc(txt)}</textarea>
+<p><button class="btn" onclick="readBill()">Read bill</button></p>
+${msg?`<div class="box ${/^Added/.test(msg)?"ok":"warn"}">${esc(msg)}</div>`:""}
+${p?`<h3 style="margin-top:18px">What the agent understood</h3><p class="sub">Fields marked “needs you” were not found. Fill or correct them, then confirm.</p>
+<div class="grid"><div><label for="f_t">Type</label><select id="f_t"><option value="P"${p.t==="P"?" selected":""}>Purchase</option><option value="S"${p.t==="S"?" selected":""}>Sale</option></select></div>
+<div><label for="f_p">Party ${p.party?"":'<span class="pill warn">needs you</span>'}</label><input id="f_p" value="${esc(p.party)}"></div>
+<div><label for="f_g">GSTIN (optional)</label><input id="f_g" value="${esc(p.g)}"></div>
+<div><label for="f_b">Amount before tax ${p.base?"":'<span class="pill warn">needs you</span>'}</label><input id="f_b" type="number" value="${p.base||""}"></div>
+<div><label for="f_r">GST rate % ${p.rate!==""?"":'<span class="pill warn">needs you</span>'}</label><input id="f_r" type="number" value="${p.rate}"></div></div>
+<button class="btn" onclick="addEntry()">Confirm and add to ledger</button>`:""}`},
+ledger(){const c=calc();return`<h2>Ledger</h2><p class="sub">Every confirmed bill, sorted into purchases and sales.</p><div class="tbl"><table><tr><th>Type</th><th>Party</th><th class="n">Before tax</th><th class="n">GST</th><th class="n">Total</th></tr>${E.map(e=>`<tr><td><span class="pill ${e.t==="S"?"info":"ok"}">${e.t==="S"?"Sale":"Purchase"}</span></td><td>${esc(e.party)}</td><td class="n">${fmt(e.base)}</td><td class="n">${fmt(tax(e))}</td><td class="n">${fmt(e.base+tax(e))}</td></tr>`).join("")}</table></div>
+<p class="note">Tax collected on sales: ${fmt(c.out)} · Tax paid on purchases: ${fmt(c.itc+c.hold)}</p>`},
+match(){const m=E.filter(e=>e.t==="P");return`<h2>Match suppliers</h2><p class="sub">The agent compares each purchase with what the supplier has filed (mock data). Credit is only safe when the supplier’s filing shows the invoice.</p>
+${m.map(e=>{const f=filed(e);return`<div class="box" style="border:1px solid var(--line)"><div class="row" style="border:0;padding:0"><b>${esc(e.party)}</b><span>${fmt(e.base+tax(e))}</span></div>
+<p style="margin:6px 0">${f?`<span class="pill ok">Matched</span> Supplier filed. Credit of ${fmt(tax(e))} counts.`:`<span class="pill bad">Credit at risk ${fmt(tax(e))}</span> ${e.g?"Not in supplier’s filing yet.":"No supplier GSTIN on this bill."}`}</p>
+${f?"":`<details><summary style="cursor:pointer;color:var(--acc);font-weight:600">Draft reminder to supplier</summary><p class="box info" style="user-select:all">Hello ${esc(e.party)}, our purchase invoice of ${fmt(e.base+tax(e))} does not show in your GST filing. Please file it so we can claim credit before the due date. Thank you.</p></details>`}</div>`}).join("")}`},
+dispatch(){const S=E.filter(e=>e.t==="S"),s=S.find(e=>String(e.id)===esel),v=s?s.base+tax(s):"";return`<h2>E-way bill pre-check</h2><p class="sub">Catch missing details before the truck leaves, so the consignment isn’t held at a checkpoint.</p>
+<label for="e_s">Start from a sale</label><select id="e_s" onchange="pick()"><option value="">Enter manually</option>${S.map(e=>`<option value="${e.id}"${String(e.id)===esel?" selected":""}>${esc(e.party)} · ${fmt(e.base+tax(e))}</option>`).join("")}</select>
+<div class="grid"><div><label for="e_v">Invoice value (₹)</label><input id="e_v" type="number" value="${eway?eway.v:v}"></div><div><label for="e_f">Sender GSTIN</label><input id="e_f" value="${eway?esc(eway.fg):"33AABCM5555Q1ZA"}"></div><div><label for="e_t">Receiver GSTIN</label><input id="e_t" value="${eway?esc(eway.tg):s?s.g:""}"></div><div><label for="e_h">Vehicle number</label><input id="e_h" value="${eway?esc(eway.veh):""}" placeholder="TN38AB1234"></div><div><label for="e_g">Goods</label><input id="e_g" value="${eway?esc(eway.goods):s?"Building materials":""}"></div></div>
+<button class="btn" onclick="ewayCheck()">Run pre-check</button>
+${eway?`<ul class="c">${eway.ok.map(([t,k])=>`<li><span class="pill ${k}">${k==="ok"?"Pass":k==="bad"?"Fix":k==="warn"?"Check":"Info"}</span>${t}</li>`).join("")}</ul>${eway.ok.some(x=>x[1]==="bad")?`<div class="box bad">Fix the items above before generating the e-way bill.</div>`:`<div class="box ok">Details are ready. Open the e-way bill portal to generate it (simulated here).</div>`}`:""}`},
+return(){const c=calc(),T=lang==="en"?`You collected ${fmt(c.out)} GST on sales and paid ${fmt(c.itc+c.hold)} on purchases. Credit of ${fmt(c.itc)} counts now. ${c.hold?fmt(c.hold)+" is on hold because a supplier has not filed. ":""}So the draft tax to pay is ${fmt(c.pay)}.`:`விற்பனையில் ${fmt(c.out)} ஜிஎஸ்டி வசூலித்தீர்கள்; கொள்முதலில் ${fmt(c.itc+c.hold)} செலுத்தினீர்கள். ${fmt(c.itc)} உள்ளீட்டு வரிக் கடன் இப்போது கணக்கிடப்படுகிறது். ${c.hold?fmt(c.hold)+" சப்ளையர் தாக்கல் செய்யாததால் நிறுத்தப்பட்டுள்ளது. ":""}எனவே செலுத்த வேண்டிய வரி ${fmt(c.pay)}.`;
+return`<h2>Draft return</h2><p class="sub">Prepared for review. The owner or an accountant approves; the agent never files.</p>
+<div class="row"><span>Tax on sales</span><b>${fmt(c.out)}</b></div><div class="row"><span>Input credit counted</span><b>− ${fmt(c.itc)}</b></div><div class="row"><span>Credit on hold (supplier not filed)</span><b>${fmt(c.hold)}</b></div><div class="row t"><span>Draft tax payable</span><span>${fmt(c.pay)}</span></div>
+${c.carry?`<p class="note">Credit of ${fmt(c.carry)} carries forward.</p>`:""}
+<div class="box info"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><h3>Explained simply</h3><span><button class="btn g" onclick="lang='en';R()">English</button> <button class="btn g" onclick="lang='ta';R()">தமிழ்</button></span></div><p>${T}</p></div>
+<h3>Upcoming deadlines</h3><ul class="c">${dueInfo()}</ul>
+${done?`<div class="box ok"><b>Simulated filing complete.</b> Acknowledgement ${done}. Nothing was sent to the GST portal.</div>`:`<label style="display:flex;gap:8px;align-items:center;font-size:15px;color:var(--ink)"><input type="checkbox" style="width:auto" ${reviewed?"checked":""} onchange="reviewed=this.checked;R()"> I have reviewed the source bills and this draft</label><p><button class="btn" ${reviewed?"":"disabled"} onclick="approve()">Approve and simulate filing</button></p>`}`}};
+function R(){const c=calc();$("#strip").innerHTML=`<div><b>${E.length}</b><span>bills in ledger</span></div><div><b>${fmt(c.hold)}</b><span>credit at risk</span></div><div><b>${fmt(c.pay)}</b><span>draft tax payable</span></div>`;
+$("#tabs").innerHTML=TABS.map(([k,l])=>`<button role="tab" aria-selected="${k===tab}" class="${k===tab?"on":""}" onclick="go('${k}')">${l}</button>`).join("");$("#panel").innerHTML=V[tab]()}
+R();
+</script></body></html>
